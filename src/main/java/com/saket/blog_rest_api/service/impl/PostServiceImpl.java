@@ -3,8 +3,13 @@ package com.saket.blog_rest_api.service.impl;
 import com.saket.blog_rest_api.entity.Post;
 import com.saket.blog_rest_api.exceptions.ResourceNotFoundException;
 import com.saket.blog_rest_api.payload.PostDto;
+import com.saket.blog_rest_api.payload.PostResponse;
 import com.saket.blog_rest_api.repository.PostRepository;
 import com.saket.blog_rest_api.service.PostService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -36,13 +41,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDto> getAllPosts() {
+    public PostResponse getAllPosts(int pageNo, int pageSize, String sortBy, String sortDir) {
 
-        List<Post> posts = postRepository.findAll();
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+
+        // create pageable instaance
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<Post> posts = postRepository.findAll(pageable);
+        List<Post> listOfPosts = posts.getContent();
 
         // converting from entity to dto
-        List<PostDto> postDtoList= posts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
-        return postDtoList;
+        List<PostDto> postDtoList= listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
+        PostResponse postResponse = new PostResponse();
+        postResponse.setPostDtoList(postDtoList);
+        postResponse.setPageNo(posts.getNumber());
+        postResponse.setPageSize(posts.getSize());
+        postResponse.setTotalPages(posts.getTotalPages());
+        postResponse.setTotalElements(posts.getTotalElements());
+        postResponse.setLast(posts.isLast());
+
+
+        return postResponse;
     }
 
     @Override
