@@ -9,6 +9,9 @@ import com.saket.blog_rest_api.repository.PostRepository;
 import com.saket.blog_rest_api.service.CommentService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class CommentServiceImpl implements CommentService {
 
@@ -37,6 +40,23 @@ public class CommentServiceImpl implements CommentService {
 
 
         return mapToDto(newComment);
+    }
+
+    @Override
+    public List<CommentDto> getCommentsByPostId(long postId) {
+
+        List<Comment> comments = commentRepository.findByPostId(postId);
+
+
+        return comments.stream().map(comment -> mapToDto(comment)).collect(Collectors.toList());
+    }
+
+    @Override
+    public CommentDto getCommentById(long postId, long commentId) {
+
+        Comment comment = commentRepository.findByPostIdAndId(postId,commentId);
+
+        return mapToDto(comment);
     }
 
     private CommentDto mapToDto(Comment comment){
