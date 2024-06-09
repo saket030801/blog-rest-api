@@ -6,6 +6,7 @@ import com.saket.blog_rest_api.payload.PostDto;
 import com.saket.blog_rest_api.payload.PostResponse;
 import com.saket.blog_rest_api.repository.PostRepository;
 import com.saket.blog_rest_api.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,9 +22,11 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
 
     private PostRepository postRepository;
+    private ModelMapper modelMapper;
 
-    public PostServiceImpl(PostRepository postRepository){
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper){
         this.postRepository=postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -97,10 +100,13 @@ public class PostServiceImpl implements PostService {
 
     // converting DTO to entity
     private Post mapToEntity(PostDto postDto){
-        Post post = new Post();
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+
+        Post post = modelMapper.map(postDto, Post.class);
+
+//        Post post = new Post();
+//        post.setTitle(postDto.getTitle());
+//        post.setDescription(postDto.getDescription());
+//        post.setContent(postDto.getContent());
 
         return post;
     }
@@ -108,12 +114,15 @@ public class PostServiceImpl implements PostService {
 
     // converting entity to DTO
     private PostDto mapToDto(Post newPost){
-        PostDto postResponse = new PostDto();
-        postResponse.setId(newPost.getId());
-        postResponse.setTitle(newPost.getTitle());
-        postResponse.setContent(newPost.getContent());
-        postResponse.setDescription(newPost.getDescription());
 
-        return postResponse;
+        PostDto postDto = modelMapper.map(newPost, PostDto.class);
+
+//        PostDto postResponse = new PostDto();
+//        postResponse.setId(newPost.getId());
+//        postResponse.setTitle(newPost.getTitle());
+//        postResponse.setContent(newPost.getContent());
+//        postResponse.setDescription(newPost.getDescription());
+
+        return postDto;
     }
 }

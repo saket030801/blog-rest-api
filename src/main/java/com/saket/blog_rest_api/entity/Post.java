@@ -1,9 +1,7 @@
 package com.saket.blog_rest_api.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -11,7 +9,8 @@ import java.util.Set;
 
 // @Data creates all getters and setters and constructor, ToString and equal method as well
 
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
