@@ -5,6 +5,7 @@ import com.saket.blog_rest_api.payload.PostDto;
 import com.saket.blog_rest_api.payload.PostResponse;
 import com.saket.blog_rest_api.service.PostService;
 import com.saket.blog_rest_api.utils.AppConstants;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,7 +25,7 @@ public class PostController {
     // create blog-post
 
     @PostMapping
-    public ResponseEntity<PostDto> createPost(@RequestBody PostDto postDto){
+    public ResponseEntity<PostDto> createPost(@Valid @RequestBody PostDto postDto){
         return  new ResponseEntity<>(postService.createPost(postDto), HttpStatus.CREATED);
     }
 
@@ -44,7 +45,7 @@ public class PostController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<PostDto> updatePostById(@RequestBody PostDto postDto, @PathVariable(name = "id") long id){
+    public ResponseEntity<PostDto> updatePostById(@Valid@RequestBody PostDto postDto, @PathVariable(name = "id") long id){
         return new ResponseEntity<>(postService.updatePostById(postDto, id), HttpStatus.OK);
     }
 
